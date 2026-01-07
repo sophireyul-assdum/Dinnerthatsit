@@ -6,133 +6,101 @@
     <title>เย็นนี้กินอะไรดี? ❤️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" href="https://emojicdn.elk.sh/🍱">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="https://emojicdn.elk.sh/💖🥘">
+    <link rel="apple-touch-icon" href="https://emojicdn.elk.sh/💖🥘">
 
     <style>
         :root {
             --primary: #ff4d6d;
+            --secondary: #ffccd5;
             --bg: #fff0f3;
             --card: #ffffff;
         }
 
         body {
-            font-family: 'Chakra Petch', -apple-system, sans-serif;
+            font-family: -apple-system, sans-serif;
             background-color: var(--bg);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
+            padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
             background: var(--card);
-            width: 85%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 40px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.1);
+            width: 100%;
+            max-width: 350px;
+            padding: 25px;
+            border-radius: 35px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.1);
             text-align: center;
+            margin-top: 20px;
         }
 
-        h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; }
-        p { color: #880d1e; margin-bottom: 25px; font-size: 0.9rem; }
+        h1 { color: var(--primary); font-size: 1.6rem; margin-bottom: 5px; }
 
         #display-box {
-            height: 120px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #fff8f9;
-            border-radius: 25px;
-            margin-bottom: 25px;
-            border: 3px solid #ffccd5;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 2px dashed var(--primary);
         }
 
-        #food-text {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+        #food-text { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
 
-        .btn-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+        .btn-stack { display: flex; flex-direction: column; gap: 12px; }
 
         button {
             border: none;
-            padding: 18px;
-            font-size: 1.2rem;
+            padding: 16px;
+            font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 18px;
             cursor: pointer;
             transition: 0.2s;
         }
 
-        .main-btn {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        .main-btn { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.2); }
+        .veto-btn { background: var(--secondary); color: var(--primary); display: none; }
+
+        .history-section {
+            margin-top: 30px;
+            text-align: left;
+            width: 100%;
+            max-width: 350px;
         }
 
-        .veto-btn {
-            background: #ffccd5;
-            color: #ff4d6d;
+        .history-title {
             font-size: 0.9rem;
-            display: none; /* Hidden until first pick */
+            color: #880d1e;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        button:active { transform: scale(0.95); opacity: 0.9; }
-    </style>
-</head>
-<body>
+        .history-list {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 10px;
+            list-style: none;
+            margin: 0;
+        }
 
-<div class="container">
-    <h1>เย็นนี้กินอะไรดี?</h1>
-    <p>กดเพื่อสุ่มเมนูสำหรับเราสองคน</p>
+        .history-item {
+            font-size: 0.85rem;
+            padding: 8px;
+            border-bottom: 1px solid #ffccd5;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+        }
 
-    <div id="display-box">
-        <div id="food-text">กินไรดีนะ? 😋</div>
-    </div>
-
-    <div class="btn-stack">
-        <button class="main-btn" onclick="spinWheel()">สุ่มเลย! ✨</button>
-        <button id="veto" class="veto-btn" onclick="spinWheel()">ไม่เอาอันนี้... สุ่มใหม่ 🔄</button>
-    </div>
-</div>
-
-<script>
-    // Your Custom Food List
-    const foods = [
-        "เตี๋ยว 🍜", "ก๊วยจั้บ 🍲", "ข้าวมันไก่ 🍗", "หมูทะ 🥩🔥", 
-        "ส้มตำ 🥗🌶️", "ชาบู 🥘", "มาม่า 🍜🍳", "กะเพรา 🍳🌿", 
-        "ตามสั่ง 🍳🍚", "แกงต่างๆ 🥘"
-    ];
-
-    function spinWheel() {
-        const text = document.getElementById('food-text');
-        const vetoBtn = document.getElementById('veto');
-        let counter = 0;
-        
-        const interval = setInterval(() => {
-            text.innerText = foods[Math.floor(Math.random() * foods.length)];
-            counter++;
-            
-            if (counter > 12) {
-                clearInterval(interval);
-                const final = foods[Math.floor(Math.random() * foods.length)];
-                text.innerText = final;
-                vetoBtn.style.display = "block"; // Show Veto button
-            }
-        }, 60);
-    }
-</script>
-
-</body>
-</html>
+        .history-item:last-child { border-bottom:
