@@ -103,4 +103,96 @@
             justify-content: space-between;
         }
 
-        .history-item:last-child { border-bottom:
+        .history-item:last-child { border-bottom: none; }
+        
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-card">
+    <h1>เย็นนี้กินอะไรดี? ❤️</h1>
+    <div id="display-box">
+        <div id="food-text">กินอะไรดีนะเธอ? 😋</div>
+    </div>
+
+    <div class="btn-stack">
+        <button class="main-btn" onclick="spinWheel()">สุ่มเมนู! ✨</button>
+        <button id="veto" class="veto-btn" onclick="vetoAction()">ไม่เอาอันนี้... สุ่มใหม่ 🔄</button>
+    </div>
+</div>
+
+<div class="history-section">
+    <span class="history-title">รายการที่เพิ่งสุ่มได้:</span>
+    <div id="history-list" class="history-list"></div>
+</div>
+
+<script>
+    const foods = [
+        "เตี๋ยว 🍜", "ก๊วยจั้บ 🍲", "ข้าวมันไก่ 🍗", "หมูทะ 🥩🔥", 
+        "ส้มตำ 🥗🌶️", "ชาบู 🥘", "มาม่า 🍜🍳", "กะเพรา 🍳🌿", 
+        "ตามสั่ง 🍳🍚", "แกงต่างๆ 🥘", "ขาหมู 🍖", "ยำแซ่บๆ 🥗🌶️", 
+        "สุกี้แห้ง 🍲", "มันไก่ทอด 🍗", "ผัดไทย 🍝", "หมูกรอบ 🥓", 
+        "ย่างเกาหลี 🇰🇷", "ญี่ปุ่น 🍣", "สเต็กริมทาง 🥩", "โจ๊ก/ข้าวต้ม 🥣"
+    ];
+
+    let history = JSON.parse(localStorage.getItem('foodHistory')) || [];
+    renderHistory();
+
+    function spinWheel() {
+        const text = document.getElementById('food-text');
+        const vetoBtn = document.getElementById('veto');
+        let counter = 0;
+        
+        const interval = setInterval(() => {
+            text.innerText = foods[Math.floor(Math.random() * foods.length)];
+            counter++;
+            
+            if (counter > 12) {
+                clearInterval(interval);
+                const final = foods[Math.floor(Math.random() * foods.length)];
+                text.innerText = final;
+                vetoBtn.style.display = "block";
+                addToHistory(final);
+            }
+        }, 60);
+    }
+
+    function vetoAction() {
+        document.getElementById('main-card').classList.add('shake');
+        setTimeout(() => document.getElementById('main-card').classList.remove('shake'), 500);
+        spinWheel();
+    }
+
+    function addToHistory(item) {
+        const now = new Date();
+        const timeStr = now.getHours() + ":" + now.getMinutes().toString().padStart(2, '0');
+        history.unshift({ name: item, time: timeStr });
+        if (history.length > 5) history.pop();
+        localStorage.setItem('foodHistory', JSON.stringify(history));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        if (history.length === 0) {
+            list.innerHTML = '<div style="color:#aaa; text-align:center; font-size:0.8rem;">ยังไม่มีประวัติการสุ่ม</div>';
+            return;
+        }
+        list.innerHTML = history.map(h => `
+            <div class="history-item">
+                <span>${h.name}</span>
+                <span style="color:#ccc;">${h.time}</span>
+            </div>
+        `).join('');
+    }
+</script>
+
+</body>
+</html>
