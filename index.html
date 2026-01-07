@@ -1,125 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dinner Decider ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เย็นนี้กินอะไรดี? ❤️</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="https://emojicdn.elk.sh/🍱">
+
     <style>
+        :root {
+            --primary: #ff4d6d;
+            --bg: #fff0f3;
+            --card: #ffffff;
+        }
+
         body {
-            font-family: -apple-system, sans-serif;
-            background-color: #fff0f3;
+            font-family: 'Chakra Petch', -apple-system, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0;
-            padding: 20px;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .card {
-            background: white;
-            width: 100%;
-            max-width: 350px;
+        .container {
+            background: var(--card);
+            width: 85%;
+            max-width: 400px;
             padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.1);
             text-align: center;
         }
 
-        h1 { color: #ff4d6d; margin-bottom: 5px; }
-        p { color: #590d22; margin-bottom: 30px; font-size: 0.9rem; }
+        h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; }
+        p { color: #880d1e; margin-bottom: 25px; font-size: 0.9rem; }
 
-        #result-box {
-            height: 100px;
+        #display-box {
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff0f3;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            border: 2px dashed #ff4d6d;
+            background: #fff8f9;
+            border-radius: 25px;
+            margin-bottom: 25px;
+            border: 3px solid #ffccd5;
         }
 
         #food-text {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
-            color: #ff4d6d;
+            color: var(--primary);
         }
 
-        .pick-btn {
-            background: #ff4d6d;
-            color: white;
+        .btn-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
             border: none;
-            padding: 15px 40px;
+            padding: 18px;
             font-size: 1.2rem;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            width: 100%;
+            transition: 0.2s;
         }
 
-        .pick-btn:active { transform: scale(0.95); }
-
-        .list-preview {
-            margin-top: 30px;
-            text-align: left;
-            font-size: 0.8rem;
-            color: #888;
-            max-height: 150px;
-            overflow-y: auto;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
         }
+
+        .veto-btn {
+            background: #ffccd5;
+            color: #ff4d6d;
+            font-size: 0.9rem;
+            display: none; /* Hidden until first pick */
+        }
+
+        button:active { transform: scale(0.95); opacity: 0.9; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>What to eat?</h1>
-    <p>Let destiny decide tonight's dinner</p>
+<div class="container">
+    <h1>เย็นนี้กินอะไรดี?</h1>
+    <p>กดเพื่อสุ่มเมนูสำหรับเราสองคน</p>
 
-    <div id="result-box">
-        <div id="food-text">Tap the button! 👇</div>
+    <div id="display-box">
+        <div id="food-text">กินไรดีนะ? 😋</div>
     </div>
 
-    <button class="pick-btn" onclick="spinWheel()">PICK FOR US ✨</button>
-
-    <div class="list-preview">
-        <strong>Our 20 Options:</strong>
-        <div id="display-list"></div>
+    <div class="btn-stack">
+        <button class="main-btn" onclick="spinWheel()">สุ่มเลย! ✨</button>
+        <button id="veto" class="veto-btn" onclick="spinWheel()">ไม่เอาอันนี้... สุ่มใหม่ 🔄</button>
     </div>
 </div>
 
 <script>
-    // You can edit this list easily!
-    const foodOptions = [
-        "Pizza Night 🍕", "Sushi 🍣", "Burgers 🍔", "Tacos 🌮", 
-        "Pasta 🍝", "Steak 🥩", "Fried Chicken 🍗", "Ramen 🍜", 
-        "Dim Sum 🥟", "Salad Bowl 🥗", "BBQ 🍖", "Thai Curry 🍛", 
-        "Hot Pot 🍲", "Sandwiches 🥪", "Korean Fried Chicken 🍗", 
-        "Pho 🍜", "Kebab 🥙", "Fish & Chips 🐟", "Stir Fry 🍳", "Breakfast for Dinner 🥞"
+    // Your Custom Food List
+    const foods = [
+        "เตี๋ยว 🍜", "ก๊วยจั้บ 🍲", "ข้าวมันไก่ 🍗", "หมูทะ 🥩🔥", 
+        "ส้มตำ 🥗🌶️", "ชาบู 🥘", "มาม่า 🍜🍳", "กะเพรา 🍳🌿", 
+        "ตามสั่ง 🍳🍚", "แกงต่างๆ 🥘"
     ];
 
-    // Show the list at the bottom so you know what's in there
-    document.getElementById('display-list').innerText = foodOptions.join(", ");
-
     function spinWheel() {
-        const textDisplay = document.getElementById('food-text');
+        const text = document.getElementById('food-text');
+        const vetoBtn = document.getElementById('veto');
         let counter = 0;
         
-        // Rapidly shuffle names for 1 second (cool effect)
         const interval = setInterval(() => {
-            const randomTemp = foodOptions[Math.floor(Math.random() * foodOptions.length)];
-            textDisplay.innerText = randomTemp;
+            text.innerText = foods[Math.floor(Math.random() * foods.length)];
             counter++;
             
-            if (counter > 15) {
+            if (counter > 12) {
                 clearInterval(interval);
-                const finalChoice = foodOptions[Math.floor(Math.random() * foodOptions.length)];
-                textDisplay.innerText = finalChoice;
-                textDisplay.style.color = "#c9184a"; // Darken color when picked
+                const final = foods[Math.floor(Math.random() * foods.length)];
+                text.innerText = final;
+                vetoBtn.style.display = "block"; // Show Veto button
             }
-        }, 50);
+        }, 60);
     }
 </script>
 
