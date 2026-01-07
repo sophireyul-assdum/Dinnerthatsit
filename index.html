@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinner Decider ❤️</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background-color: #fff0f3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 350px;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        h1 { color: #ff4d6d; margin-bottom: 5px; }
+        p { color: #590d22; margin-bottom: 30px; font-size: 0.9rem; }
+
+        #result-box {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff0f3;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 2px dashed #ff4d6d;
+        }
+
+        #food-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff4d6d;
+        }
+
+        .pick-btn {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            width: 100%;
+        }
+
+        .pick-btn:active { transform: scale(0.95); }
+
+        .list-preview {
+            margin-top: 30px;
+            text-align: left;
+            font-size: 0.8rem;
+            color: #888;
+            max-height: 150px;
+            overflow-y: auto;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>What to eat?</h1>
+    <p>Let destiny decide tonight's dinner</p>
+
+    <div id="result-box">
+        <div id="food-text">Tap the button! 👇</div>
+    </div>
+
+    <button class="pick-btn" onclick="spinWheel()">PICK FOR US ✨</button>
+
+    <div class="list-preview">
+        <strong>Our 20 Options:</strong>
+        <div id="display-list"></div>
+    </div>
+</div>
+
+<script>
+    // You can edit this list easily!
+    const foodOptions = [
+        "Pizza Night 🍕", "Sushi 🍣", "Burgers 🍔", "Tacos 🌮", 
+        "Pasta 🍝", "Steak 🥩", "Fried Chicken 🍗", "Ramen 🍜", 
+        "Dim Sum 🥟", "Salad Bowl 🥗", "BBQ 🍖", "Thai Curry 🍛", 
+        "Hot Pot 🍲", "Sandwiches 🥪", "Korean Fried Chicken 🍗", 
+        "Pho 🍜", "Kebab 🥙", "Fish & Chips 🐟", "Stir Fry 🍳", "Breakfast for Dinner 🥞"
+    ];
+
+    // Show the list at the bottom so you know what's in there
+    document.getElementById('display-list').innerText = foodOptions.join(", ");
+
+    function spinWheel() {
+        const textDisplay = document.getElementById('food-text');
+        let counter = 0;
+        
+        // Rapidly shuffle names for 1 second (cool effect)
+        const interval = setInterval(() => {
+            const randomTemp = foodOptions[Math.floor(Math.random() * foodOptions.length)];
+            textDisplay.innerText = randomTemp;
+            counter++;
+            
+            if (counter > 15) {
+                clearInterval(interval);
+                const finalChoice = foodOptions[Math.floor(Math.random() * foodOptions.length)];
+                textDisplay.innerText = finalChoice;
+                textDisplay.style.color = "#c9184a"; // Darken color when picked
+            }
+        }, 50);
+    }
+</script>
+
+</body>
+</html>
